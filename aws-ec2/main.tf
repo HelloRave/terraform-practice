@@ -10,14 +10,15 @@ terraform {
 }
 
 provider "aws" {
-  region  = "ap-southeast-1"
+  region = "ap-southeast-1"
 }
 
 resource "aws_instance" "app_server" {
+  count         = var.environment == "dev" ? 1 : 2
   ami           = var.ami
   instance_type = "t2.micro"
 
   tags = {
-    Name = "ExampleAppServerInstance"
+    Name = "Instance ${count.index}"
   }
 }
