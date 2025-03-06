@@ -14,8 +14,8 @@ provider "aws" {
 }
 
 data "aws_ami" "ami" {
-  most_recent      = true
-  owners           = ["amazon"]
+  most_recent = true
+  owners      = ["amazon"]
 
   filter {
     name   = "name"
@@ -40,7 +40,7 @@ locals {
 }
 
 resource "aws_instance" "app_server" {
-  count         = var.environment == "dev" ? 1 : 2
+  count         = var.environment == "dev" ? 2 : 1
   ami           = data.aws_ami.ami.image_id
   instance_type = "t2.micro"
 
@@ -48,4 +48,8 @@ resource "aws_instance" "app_server" {
     Name         = "Instance ${count.index}"
     CreationDate = local.app_server_tags["CreationDate"]
   }
+}
+
+output "app_servers_arn" {
+  value = aws_instance.app_server[*].arn
 }
